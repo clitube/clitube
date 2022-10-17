@@ -83,7 +83,7 @@ class Paginator implements InteractiveComponent
             'Enter `<` or `>` to change the current page',
         ];
         if ($this->paginator instanceof OffsetPaginator) {
-            $tips[] = 'Enter `<<` or `>>` to navigate to the firs or to the last page';
+            $tips[] = 'Enter `<<` or `>>` to navigate to the first or to the last page';
         }
         $this->screen->pageStatusCallable(static fn (): string => \sprintf(
             "\033[90m%s\033[0m",
