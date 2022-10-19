@@ -31,6 +31,7 @@ class MarkupString
         bool $markup = false,
         StyleState $styleState = new StyleState(),
     ): string {
+        /** @var array{array{non-empty-string, int<0, max>}, array{non-empty-string, int<0, max>}} $matches */
         \preg_match_all(
             '/\\033\\[(\\d{1,2}(?:;\\d{1,3})*)m/u',
             $string,
@@ -38,10 +39,6 @@ class MarkupString
             PREG_OFFSET_CAPTURE | PREG_UNMATCHED_AS_NULL,
         );
 
-        /**
-         * @var array{non-empty-string, int<0, max>} $markers
-         * @var array{non-empty-string, int<0, max>} $codes
-         */
         [$markers, $codes] = $matches;
         /**
          * Flip array to Caret position => Marker index
