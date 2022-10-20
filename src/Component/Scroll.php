@@ -11,6 +11,8 @@ use CliTube\Contract\Command\UserCommand;
 use CliTube\Contract\InteractiveComponent;
 use CliTube\Internal\Events\EventDispatcher;
 use CliTube\Internal\Screen\Leaflet;
+use CliTube\Internal\Screen\Style\Effect;
+use CliTube\Internal\Screen\Style\Foreground;
 use Closure;
 use Stringable;
 
@@ -95,16 +97,25 @@ class Scroll implements InteractiveComponent
 
     private function configureScreen(bool $overwrite): void
     {
+        $color = Foreground::Magenta;
         $this->screen->overwrite = $overwrite;
         $this->screen->pageStatusCallable(fn (Leaflet $screen) =>
             \sprintf(
-                "\033[90m%s\033[0m",
+                "%s%s%s",
+                $color->string(),
                 \rtrim(\str_pad(
-                    $screen->isEnd() ? '-- End --' : "-- Press \033[06m Enter \033[0m\033[90m to continue --",
+                    $screen->isEnd()
+                        ? '-- End --'
+                        : \sprintf(
+                            "-- Press %sEnter%s to continue --",
+                            Effect::Bold->string(),
+                            Effect::Reset->string($color),
+                        ),
                     $screen->getWindowWidth(),
                     ' ',
                     \STR_PAD_BOTH,
-                ), ' ')
+                ), ' '),
+                Effect::Reset->string(),
             )
         );
     }
