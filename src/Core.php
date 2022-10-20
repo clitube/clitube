@@ -65,6 +65,10 @@ final class Core implements EventListener
         $this->running = true;
         $inputStream = STDIN; # todo
         try {
+            /**
+             * @psalm-suppress RedundantCondition
+             * Because the {@see Quit} event from a component can change the $this->running value
+             */
             while ($this->running && $this->components !== []) {
                 $component = \reset($this->components);
 

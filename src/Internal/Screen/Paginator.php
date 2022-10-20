@@ -44,7 +44,6 @@ final class Paginator extends AbstractScreen
         // Set new Offset
         $screenLength = $this->getWindowWidth();
         $longestLine = \max($screenLength, ...\array_map($this->strlen(...), $this->tableLines));
-        \assert(\is_int($longestLine));
         $maxOffset = $longestLine - $screenLength;
         \assert($maxOffset >= 0);
 

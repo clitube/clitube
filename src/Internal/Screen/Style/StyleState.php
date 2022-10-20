@@ -42,11 +42,13 @@ final class StyleState implements Countable
      *
      * @param class-string<T> $class
      *
-     * @return null|T
+     * @return T|null
      */
     public function getStuffValue(string $class): ?StyleStuff
     {
-        return $this->style[$class] ?? null;
+        $result = $this->style[$class] ?? null;
+        \assert($result === null || $result instanceof $class);
+        return $result;
     }
 
     public function count(): int
