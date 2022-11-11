@@ -6,6 +6,7 @@ namespace CliTube\Internal\Screen;
 
 use CliTube\Contract\Pagination\OffsetPaginator;
 use CliTube\Contract\Pagination\Paginator as PaginatorInterface;
+use CliTube\Internal\Screen\Line\Line;
 use ErrorException;
 use Symfony\Component\Console\Helper\Table;
 use Symfony\Component\Console\Output\BufferedOutput;
@@ -95,11 +96,9 @@ final class Paginator extends AbstractScreen
         }
 
         // Render Status and Input
-        $this->pageStatus = $this->substr(
+        $this->pageStatus = new Line(
             (string)($this->pageStatusCallable === null ? null : ($this->pageStatusCallable)($this)),
-            0,
-            $maxLength,
-            true,
+            length: $maxLength,
         );
         $this->pageInput = $this->substr($this->renderPaginatorBar() . '  ', 0, $maxLength, true);
 

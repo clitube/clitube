@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace CliTube\Internal\Screen;
 
+use CliTube\Internal\Screen\Line\Line;
 use Symfony\Component\Console\Output\OutputInterface;
 
 /**
@@ -90,7 +91,10 @@ final class Leaflet extends AbstractScreen
             $this->cursor[3] = $column;
         }
         // Render Status
-        $this->pageStatus = $this->pageStatusCallable === null ? null : ($this->pageStatusCallable)($this);
+        $this->pageStatus = new Line(
+            (string)($this->pageStatusCallable === null ? null : ($this->pageStatusCallable)($this)),
+            length: $maxLength,
+        );
         // if ($this->pageStatus === null) {
         //     ++$maxHeight;
         // }

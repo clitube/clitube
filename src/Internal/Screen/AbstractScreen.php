@@ -5,8 +5,7 @@ declare(strict_types=1);
 namespace CliTube\Internal\Screen;
 
 use CliTube\Internal\Screen\Style\MarkupString;
-use CliTube\Internal\Screen\Style\Style;
-use Exception;
+use Stringable;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Terminal;
 
@@ -24,7 +23,7 @@ class AbstractScreen
 
     protected Terminal $terminal;
 
-    protected ?string $pageStatus = '';
+    protected null|string|Stringable $pageStatus = '';
     protected ?string $pageInput = '';
 
     protected bool $firstDraw = true;
@@ -78,7 +77,7 @@ class AbstractScreen
         // $i = 0;
         $frame[] = $this->pageInput;
         $this->output->write($frame, true, OutputInterface::OUTPUT_RAW);
-        $this->output->write($this->pageStatus, false, OutputInterface::OUTPUT_RAW);
+        $this->output->write((string) $this->pageStatus, false, OutputInterface::OUTPUT_RAW);
         // Move cursor to Input
         $this->output->write(sprintf("\x1b[%dA", 1));
         $this->output->write(sprintf("\x1b[%dG", $this->strlen($this->pageInput) + 1));
