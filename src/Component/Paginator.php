@@ -15,6 +15,8 @@ use CliTube\Contract\Pagination\OffsetPaginator;
 use CliTube\Contract\Pagination\Paginator as PaginatorInterface;
 use CliTube\Internal\Events\EventDispatcher;
 use CliTube\Internal\Screen\Paginator as PaginatorScreen;
+use CliTube\Internal\Screen\Style\Effect;
+use CliTube\Internal\Screen\Style\Foreground;
 use Closure;
 
 class Paginator implements InteractiveComponent
@@ -85,10 +87,10 @@ class Paginator implements InteractiveComponent
         if ($this->paginator instanceof OffsetPaginator) {
             $tips[] = 'Enter `<<` or `>>` to navigate to the first or to the last page';
         }
-        $this->screen->pageStatusCallable(static fn (): string => \sprintf(
-            "\033[90m%s\033[0m",
-            $tips[\array_rand($tips)],
-        ));
+        $this->screen->pageStatusCallable(static fn (): string => Foreground::Magenta->string()
+            . $tips[\array_rand($tips)]
+            . Effect::Reset->string(),
+        );
     }
 
     protected function exit(?Quit $event = null): void

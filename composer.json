@@ -22,8 +22,8 @@
     },
     "require-dev": {
         "mockery/mockery": "^1.5",
-        "phpunit/phpunit": "^9.5",
-        "vimeo/psalm": "^4.27"
+        "phpunit/phpunit": "^9.5.25",
+        "vimeo/psalm": "dev-master"
     },
     "autoload": {
         "psr-4": {
@@ -37,17 +37,10 @@
     },
     "scripts": {
         "test": "vendor/bin/phpunit",
-        "psalm": "vendor/bin/psalm ./src"
+        "psalm": "vendor/bin/psalm"
     },
     "config": {
         "sort-packages": true
-    },
-    "extra": {
-        "spiral": {
-            "bootloaders": [
-                "CliTube\\Bootloader\\CliTubeBootloader"
-            ]
-        }
     },
     "minimum-stability": "dev",
     "prefer-stable": true

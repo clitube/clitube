@@ -7,20 +7,20 @@ namespace CliTube\Support\Pagination;
 use ArrayIterator;
 use Countable;
 use InvalidArgumentException;
-use Traversable;
+use SeekableIterator;
 
 /**
  * @internal
  */
 class IterablePaginator extends BaseOffsetPaginator
 {
-    protected Traversable $data;
+    protected SeekableIterator $data;
 
-    public function __construct(iterable|object $data)
+    public function __construct(iterable $data)
     {
         $this->data = match (true) {
-            $data instanceof Traversable => $data,
-            \is_array($data) || \is_object($data) => new ArrayIterator($data),
+            $data instanceof SeekableIterator => $data,
+            \is_array($data) => new ArrayIterator($data),
             default => throw new InvalidArgumentException('Unsupported iterable value.'),
         };
         if ($this->data instanceof Countable) {
@@ -28,7 +28,7 @@ class IterablePaginator extends BaseOffsetPaginator
         }
     }
 
-    public function __clone(): void
+    public function __clone()
     {
         $this->data = clone $this->data;
     }

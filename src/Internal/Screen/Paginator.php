@@ -44,7 +44,6 @@ final class Paginator extends AbstractScreen
         // Set new Offset
         $screenLength = $this->getWindowWidth();
         $longestLine = \max($screenLength, ...\array_map($this->strlen(...), $this->tableLines));
-        \assert(\is_int($longestLine));
         $maxOffset = $longestLine - $screenLength;
         \assert($maxOffset >= 0);
 
@@ -92,12 +91,17 @@ final class Paginator extends AbstractScreen
         $result = [];
         // [$line, $column] = $this->cursor;
         foreach ($this->tableLines as $line) {
-            $result[] = $this->substr($line, $this->lineOffset, $maxLength);
+            $result[] = $this->substr($line, $this->lineOffset, $maxLength, true);
         }
 
         // Render Status and Input
-        $this->pageStatus = (string)($this->pageStatusCallable === null ? null : ($this->pageStatusCallable)($this));
-        $this->pageInput = $this->renderPaginatorBar() . '  ';
+        $this->pageStatus = $this->substr(
+            (string)($this->pageStatusCallable === null ? null : ($this->pageStatusCallable)($this)),
+            0,
+            $maxLength,
+            true,
+        );
+        $this->pageInput = $this->substr($this->renderPaginatorBar() . '  ', 0, $maxLength, true);
 
         // Render blank lines after the table
         $result = \array_merge($result, \array_fill(0, $maxHeight - \count($result), ''));
@@ -107,7 +111,10 @@ final class Paginator extends AbstractScreen
 
     protected function renderTable(): string
     {
-        $output = new BufferedOutput(formatter: $this->output->getFormatter());
+        $output = new BufferedOutput(
+            decorated: $this->output->isDecorated(),
+            formatter: $this->output->getFormatter(),
+        );
         $data = [];
         $headers = null;
         foreach ($this->paginator as $line) {

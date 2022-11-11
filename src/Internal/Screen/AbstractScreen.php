@@ -4,6 +4,9 @@ declare(strict_types=1);
 
 namespace CliTube\Internal\Screen;
 
+use CliTube\Internal\Screen\Style\MarkupString;
+use CliTube\Internal\Screen\Style\Style;
+use Exception;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Terminal;
 
@@ -140,7 +143,7 @@ class AbstractScreen
         $messages = \is_string($message) ? [$message] : $message;
         foreach ($messages as $msg) {
             $same = true;
-            foreach (\explode(PHP_EOL, $msg) as $line) {
+            foreach (\explode("\n", \str_replace("\r", '', $msg)) as $line) {
                 if ($same) {
                     $this->buffer[\array_key_last($this->buffer)] .= $line;
                     $same = false;
@@ -161,17 +164,15 @@ class AbstractScreen
      */
     protected function strlen(string $string): int
     {
-        $str = \preg_replace('/\\033\\[\\d{1,2}m/u', '', $string);
-
-        return \mb_strlen($str);
+        return MarkupString::strlen($string);
     }
 
     /**
      * Cut visible symbols with markup.
      * todo
      */
-    protected function substr(string $string, int $start, int $length = null): string
+    protected function substr(string $string, int $start, int $length = null, bool $markup = false): string
     {
-        return \mb_substr($string, $start, $length);
+        return MarkupString::substr($string, $start, $length, $markup);
     }
 }
