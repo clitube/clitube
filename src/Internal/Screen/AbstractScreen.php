@@ -143,7 +143,7 @@ class AbstractScreen
         $messages = \is_string($message) ? [$message] : $message;
         foreach ($messages as $msg) {
             $same = true;
-            foreach (\explode(PHP_EOL, $msg) as $line) {
+            foreach (\explode("\n", \str_replace("\r", '', $msg)) as $line) {
                 if ($same) {
                     $this->buffer[\array_key_last($this->buffer)] .= $line;
                     $same = false;
