@@ -9,7 +9,7 @@ use CliTube\Internal\Screen\Style\MarkupString;
 /**
  * Just a line of text with a custom style
  */
-class Line implements \Stringable
+class Line implements \Stringable, RenderHorizontally
 {
     const ALIGN_LEFT = 0;
     const ALIGN_CENTER = 1;
