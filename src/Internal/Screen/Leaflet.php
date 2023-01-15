@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace CliTube\Internal\Screen;
 
+use CliTube\Internal\Screen\Line\Block;
+use CliTube\Internal\Screen\Line\Line;
 use Symfony\Component\Console\Output\OutputInterface;
 
 /**
@@ -73,6 +75,7 @@ final class Leaflet extends AbstractScreen
         $maxHeight = \max(1, $this->getWindowHeight() - 2);
         $result = [];
         [$line, $column] = $this->cursor;
+        /** todo replace with {@see Block} */
         while (\count($result) < $maxHeight && isset($this->buffer[$line])) {
             if ($this->breakLines) {
                 $result[] = \mb_substr($this->buffer[$line], $column, $maxLength);
@@ -90,7 +93,10 @@ final class Leaflet extends AbstractScreen
             $this->cursor[3] = $column;
         }
         // Render Status
-        $this->pageStatus = $this->pageStatusCallable === null ? null : ($this->pageStatusCallable)($this);
+        $this->pageStatus = new Line(
+            (string)($this->pageStatusCallable === null ? null : ($this->pageStatusCallable)($this)),
+            length: $maxLength,
+        );
         // if ($this->pageStatus === null) {
         //     ++$maxHeight;
         // }
