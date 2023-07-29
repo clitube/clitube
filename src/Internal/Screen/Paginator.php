@@ -168,8 +168,8 @@ final class Paginator extends AbstractScreen
         );
     }
 
-    private function wrap(string|int $str, int|string $code): string
+    private function wrap(string|int|null $str, int|string $code): string
     {
-        return "\033[{$code}m$str\033[0m";
+        return $str === '' || $str === null ? '' : "\033[{$code}m$str\033[0m";
     }
 }
