@@ -37,7 +37,7 @@ abstract class BaseOffsetPaginator implements OffsetPaginator
     public function nextPage(): static
     {
         $clone = clone $this;
-        $clone->offset = \min(($clone->pages - 1) * $clone->limit, $clone->limit * $clone->page);
+        $clone->offset = \min(($clone->pages) * $clone->limit, $clone->limit * $clone->page);
         $clone->calc();
         return $clone;
     }

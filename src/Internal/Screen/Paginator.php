@@ -4,12 +4,16 @@ declare(strict_types=1);
 
 namespace CliTube\Internal\Screen;
 
+use BackedEnum;
 use CliTube\Contract\Pagination\OffsetPaginator;
 use CliTube\Contract\Pagination\Paginator as PaginatorInterface;
 use CliTube\Internal\Screen\Line\Line;
+use DateTimeInterface;
 use ErrorException;
+use Stringable;
 use Symfony\Component\Console\Helper\Table;
 use Symfony\Component\Console\Output\BufferedOutput;
+use UnitEnum;
 
 /**
  * @internal
@@ -127,7 +131,7 @@ final class Paginator extends AbstractScreen
         } else {
             (new Table($output))
                 ->setHeaders($headers)
-                ->setRows($data)
+                ->setRows($this->stringifyData($data))
                 ->render();
         }
 
@@ -171,5 +175,32 @@ final class Paginator extends AbstractScreen
     private function wrap(string|int|null $str, int|string $code): string
     {
         return $str === '' || $str === null ? '' : "\033[{$code}m$str\033[0m";
+    }
+
+    private function stringifyData(array $data): array
+    {
+        foreach ($data as $i => $row) {
+            foreach ($row as $j => $cell) {
+                $data[$i][$j] = $this->stringifyCell($cell);
+            }
+        }
+        return $data;
+    }
+
+    private function stringifyCell(mixed $cell): string|\Stringable
+    {
+        return match (true) {
+            $cell instanceof Stringable, \is_string($cell) => $cell,
+            $cell instanceof DateTimeInterface => $this->wrap($cell->format('Y-m-d H:i:s'), 36),
+            $cell === null => $this->wrap('NULL', 36),
+            $cell === true => $this->wrap('TRUE', 32),
+            $cell === false => $this->wrap('FALSE', 31),
+            \is_scalar($cell) => $this->wrap((string)$cell, 32),
+            $cell instanceof UnitEnum => $this->wrap(
+                \sprintf('%s::%s', \strrchr($cell::class, '\\') ?: $cell::class, $cell->name),
+                35,
+            ),
+            default => $this->wrap(\get_debug_type($cell), 90),
+        };
     }
 }
